@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.udacity.stockhawk.ui.StockDetailFragment">
+    <!--
+    FIXME revoir la mise en forme
+    FIXME extraire les chaines
+    FIXME voir l'internationalisation
+    -->
+
+    <TextView
+        android:id="@+id/name"
+        style="@style/Base.TextAppearance.AppCompat.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Intel Corporation"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+
+    <TextView
+        android:id="@+id/stockExchange"
+        style="@style/Base.TextAppearance.AppCompat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="NasdaqNM"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        />
+    <TextView
+        android:id="@+id/currency"
+        style="@style/BidPriceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="USD"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/stockExchange"
+        app:layout_constraintStart_toEndOf="@+id/stockExchange"
+        app:layout_constraintBaseline_toBaselineOf="@+id/stockExchange" />
+    <TextView
+        android:id="@+id/price"
+        style="@style/BidPriceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintLeft_toRightOf="@+id/currency"
+        app:layout_constraintStart_toEndOf="@+id/currency"
+        app:layout_constraintBaseline_toBaselineOf="@+id/stockExchange"
+        tools:text="1000.00" />
+
+    <TextView
+        android:id="@+id/changeDetail"
+        style="@style/PercentChangeTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/percent_change_pill_green"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        tools:text="1002.05"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/price"
+        app:layout_constraintStart_toEndOf="@+id/price"
+        app:layout_constraintBaseline_toBaselineOf="@+id/stockExchange"/>
+    <TextView
+        android:id="@+id/percentChangeDetail"
+        style="@style/PercentChangeTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/percent_change_pill_green"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        tools:text="100%"
+        app:layout_constraintLeft_toRightOf="@+id/changeDetail"
+        app:layout_constraintStart_toEndOf="@+id/changeDetail"
+        app:layout_constraintBaseline_toBaselineOf="@+id/stockExchange"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ask"
+        android:id="@+id/askLabel"
+        app:layout_constraintLeft_toLeftOf="@+id/stockExchange"
+        app:layout_constraintStart_toStartOf="@+id/stockExchange"
+        app:layout_constraintTop_toBottomOf="@+id/stockExchange"
+        android:layout_marginTop="8dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ask"
+        tools:text="32.25"
+        app:layout_constraintStart_toEndOf="@id/askLabel"
+        app:layout_constraintLeft_toRightOf="@+id/askLabel"
+        app:layout_constraintBaseline_toBaselineOf="@+id/askLabel"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bid"
+        android:id="@+id/bidLabel"
+        app:layout_constraintStart_toEndOf="@id/ask"
+        app:layout_constraintLeft_toRightOf="@+id/ask"
+        app:layout_constraintBaseline_toBaselineOf="@+id/ask"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bid"
+        tools:text="32.25"
+        app:layout_constraintStart_toEndOf="@id/bidLabel"
+        app:layout_constraintLeft_toRightOf="@+id/bidLabel"
+        app:layout_constraintBaseline_toBaselineOf="@+id/bidLabel"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="EPS"
+        android:id="@+id/epsLabel"
+        app:layout_constraintLeft_toLeftOf="@+id/askLabel"
+        app:layout_constraintStart_toStartOf="@+id/askLabel"
+        app:layout_constraintTop_toBottomOf="@+id/askLabel"
+        android:layout_marginTop="8dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/eps"
+        tools:text="16.65"
+        app:layout_constraintStart_toEndOf="@id/epsLabel"
+        app:layout_constraintLeft_toRightOf="@+id/epsLabel"
+        app:layout_constraintBaseline_toBaselineOf="@+id/epsLabel"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"/>
+
+    <TextView
+        android:id="@+id/peLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="PE"
+        app:layout_constraintBaseline_toBaselineOf="@+id/eps"
+        app:layout_constraintLeft_toRightOf="@+id/eps"
+        app:layout_constraintStart_toEndOf="@id/eps" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pe"
+        tools:text="16.65"
+        app:layout_constraintStart_toEndOf="@id/peLabel"
+        app:layout_constraintLeft_toRightOf="@+id/peLabel"
+        app:layout_constraintBaseline_toBaselineOf="@+id/peLabel"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PEG"
+        android:id="@+id/pegLabel"
+        app:layout_constraintStart_toEndOf="@id/pe"
+        app:layout_constraintLeft_toRightOf="@+id/pe"
+        app:layout_constraintBaseline_toBaselineOf="@+id/pe"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/peg"
+        tools:text="1.74"
+        app:layout_constraintStart_toEndOf="@id/pegLabel"
+        app:layout_constraintLeft_toRightOf="@+id/pegLabel"
+        app:layout_constraintBaseline_toBaselineOf="@+id/pegLabel"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"/>
+
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:visibility="invisible"
+        android:id="@+id/historyChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/epsLabel"
+        app:layout_goneMarginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ProgressBar
+        android:id="@+id/progressBarDetail"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="243dp"
+        tools:layout_editor_absoluteY="392dp"
+        app:layout_constraintTop_toTopOf="@id/historyChart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+    <TextView
+        android:id="@+id/error"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/progressBarDetail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+
+        />
+</android.support.constraint.ConstraintLayout>

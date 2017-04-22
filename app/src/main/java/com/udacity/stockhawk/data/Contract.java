@@ -21,23 +21,34 @@ public final class Contract {
 
         public static final Uri URI = BASE_URI.buildUpon().appendPath(PATH_QUOTE).build();
         public static final String COLUMN_SYMBOL = "symbol";
+        public static final String COLUMN_NAME = "name";
         public static final String COLUMN_PRICE = "price";
         public static final String COLUMN_ABSOLUTE_CHANGE = "absolute_change";
         public static final String COLUMN_PERCENTAGE_CHANGE = "percentage_change";
         public static final String COLUMN_HISTORY = "history";
-        public static final int POSITION_ID = 0;
-        public static final int POSITION_SYMBOL = 1;
-        public static final int POSITION_PRICE = 2;
-        public static final int POSITION_ABSOLUTE_CHANGE = 3;
-        public static final int POSITION_PERCENTAGE_CHANGE = 4;
-        public static final int POSITION_HISTORY = 5;
+        public static final String COLUMN_STOCK_EXCHANGE = "stock_exchange";
+        public static final String COLUMN_CURRENCY = "currency";
+        public static final String COLUMN_ASK = "ask";
+        public static final String COLUMN_BID = "bid";
+        public static final String COLUMN_EPS = "eps";
+        public static final String COLUMN_PE = "pe";
+        public static final String COLUMN_PEG = "peg";
+
         public static final ImmutableList<String> QUOTE_COLUMNS = ImmutableList.of(
                 _ID,
                 COLUMN_SYMBOL,
+                COLUMN_NAME,
                 COLUMN_PRICE,
                 COLUMN_ABSOLUTE_CHANGE,
                 COLUMN_PERCENTAGE_CHANGE,
-                COLUMN_HISTORY
+                COLUMN_HISTORY,
+                COLUMN_STOCK_EXCHANGE,
+                COLUMN_CURRENCY,
+                COLUMN_ASK,
+                COLUMN_BID,
+                COLUMN_EPS,
+                COLUMN_PE,
+                COLUMN_PEG
         );
         static final String TABLE_NAME = "quotes";
 

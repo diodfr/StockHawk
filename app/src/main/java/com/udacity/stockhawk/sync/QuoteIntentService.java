@@ -6,6 +6,7 @@ import android.content.Intent;
 import timber.log.Timber;
 
 
+//FIXME A supprimer ???
 public class QuoteIntentService extends IntentService {
 
     public QuoteIntentService() {

@@ -1,14 +1,19 @@
 package com.udacity.stockhawk.sync;
 
 import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
@@ -30,11 +35,11 @@ import yahoofinance.quotes.stock.StockQuote;
 
 public final class QuoteSyncJob {
 
-    private static final int ONE_OFF_ID = 2;
+    private static final String ONE_OFF_ID = "ONE_OFF";
     private static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
     private static final int PERIOD = 300000;
     private static final int INITIAL_BACKOFF = 10000;
-    private static final int PERIODIC_ID = 1;
+    private static final String PERIODIC_ID = "PeriodicQuoteUpdate";
     private static final int YEARS_OF_HISTORY = 2;
 
     private QuoteSyncJob() {
@@ -73,6 +78,8 @@ public final class QuoteSyncJob {
 
 
                 Stock stock = quotes.get(symbol);
+
+                if (!stock.isValid()) continue;
                 StockQuote quote = stock.getQuote();
 
                 float price = quote.getPrice().floatValue();
@@ -94,12 +101,19 @@ public final class QuoteSyncJob {
 
                 ContentValues quoteCV = new ContentValues();
                 quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
+                quoteCV.put(Contract.Quote.COLUMN_NAME, stock.getName());
                 quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
                 quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
                 quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-
-
                 quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
+
+                quoteCV.put(Contract.Quote.COLUMN_STOCK_EXCHANGE, stock.getStockExchange());
+                quoteCV.put(Contract.Quote.COLUMN_CURRENCY, stock.getCurrency());
+                quoteCV.put(Contract.Quote.COLUMN_ASK, stock.getQuote().getAsk().doubleValue());
+                quoteCV.put(Contract.Quote.COLUMN_BID, stock.getQuote().getBid().doubleValue());
+                quoteCV.put(Contract.Quote.COLUMN_EPS, stock.getStats().getEps().doubleValue());
+                quoteCV.put(Contract.Quote.COLUMN_PE, stock.getStats().getPe().doubleValue());
+                quoteCV.put(Contract.Quote.COLUMN_PEG, stock.getStats().getPeg().doubleValue());
 
                 quoteCVs.add(quoteCV);
 
@@ -120,26 +134,27 @@ public final class QuoteSyncJob {
 
     private static void schedulePeriodic(Context context) {
         Timber.d("Scheduling a periodic task");
+        // Create a new dispatcher using the Google Play driver.
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+
+        Job.Builder builder = dispatcher.newJobBuilder()
+                .setTag(PERIODIC_ID)
+                .setService(QuoteJobService.class)
+                .setRecurring(true)
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                .setTrigger(Trigger.executionWindow(0, PERIOD));
 
 
-        JobInfo.Builder builder = new JobInfo.Builder(PERIODIC_ID, new ComponentName(context, QuoteJobService.class));
-
-
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(PERIOD)
-                .setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
-
-
-        JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
-        scheduler.schedule(builder.build());
+        dispatcher.mustSchedule(builder.build());
     }
 
 
     public static synchronized void initialize(final Context context) {
 
         schedulePeriodic(context);
-        syncImmediately(context);
+        //syncImmediately(context);
 
     }
 
@@ -153,7 +168,7 @@ public final class QuoteSyncJob {
             context.startService(nowIntent);
         } else {
 
-            JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
+        /*    JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
 
 
             builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
@@ -162,8 +177,20 @@ public final class QuoteSyncJob {
 
             JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
-            scheduler.schedule(builder.build());
+            scheduler.schedule(builder.build());*/
 
+            FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+
+            Job.Builder builder = dispatcher.newJobBuilder()
+                    .setTag(ONE_OFF_ID)
+                    .setService(QuoteJobService.class)
+                    .setConstraints(Constraint.ON_ANY_NETWORK)
+                    .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                    .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                    .setTrigger(Trigger.NOW);
+
+
+            dispatcher.mustSchedule(builder.build());
 
         }
     }

@@ -1,6 +1,7 @@
 package com.udacity.stockhawk.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +34,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         SwipeRefreshLayout.OnRefreshListener,
         StockAdapter.StockAdapterOnClickHandler {
 
+    private static final String TAG = MainActivity.class.getName();
     private static final int STOCK_LOADER = 0;
+    public static final String STOCK_SYMBOL = "STOCK_SYMBOL";
+
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.recycler_view)
     RecyclerView stockRecyclerView;
@@ -43,11 +48,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.error)
     TextView error;
     private StockAdapter adapter;
-
-    @Override
-    public void onClick(String symbol) {
-        Timber.d("Symbol clicked: %s", symbol);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +82,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }).attachToRecyclerView(stockRecyclerView);
 
 
+    }
+
+    @Override
+    public void onClick(String symbol) {
+        Timber.d("Symbol clicked: %s", symbol);
+        Intent detail = new Intent(this, StockDetail.class);
+        detail.putExtra(STOCK_SYMBOL, symbol);
+
+        startActivity(detail);
     }
 
     private boolean networkUp() {
@@ -135,7 +144,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this,
                 Contract.Quote.URI,
-                Contract.Quote.QUOTE_COLUMNS.toArray(new String[]{}),
+                new String[]{
+                        Contract.Quote._ID,
+                        Contract.Quote.COLUMN_SYMBOL,
+                        Contract.Quote.COLUMN_PRICE,
+                        Contract.Quote.COLUMN_ABSOLUTE_CHANGE,
+                        Contract.Quote.COLUMN_PERCENTAGE_CHANGE
+                },
                 null, null, Contract.Quote.COLUMN_SYMBOL);
     }
 
@@ -152,8 +167,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(TAG, "Loader was reset");
         swipeRefreshLayout.setRefreshing(false);
         adapter.setCursor(null);
+        //FIXME error message
     }
 
 
