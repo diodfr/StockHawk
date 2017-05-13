@@ -3,12 +3,14 @@ package com.udacity.stockhawk.data;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 
 public class StockProvider extends ContentProvider {
@@ -17,6 +19,9 @@ public class StockProvider extends ContentProvider {
     private static final int QUOTE_FOR_SYMBOL = 101;
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
+
+    public static final String ACTION_DATA_UPDATED = StockProvider.class.getName() + ".ACTION_DATA_UPDATED";
+    public static final String LOG_TAG = StockProvider.class.getName();
 
     private DbHelper dbHelper;
 
@@ -107,6 +112,8 @@ public class StockProvider extends ContentProvider {
             context.getContentResolver().notifyChange(uri, null);
         }
 
+        updateWidget();
+
         return returnUri;
     }
 
@@ -145,6 +152,7 @@ public class StockProvider extends ContentProvider {
             if (context != null){
                 context.getContentResolver().notifyChange(uri, null);
             }
+            updateWidget();
         }
 
         return rowsDeleted;
@@ -161,7 +169,7 @@ public class StockProvider extends ContentProvider {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         switch (uriMatcher.match(uri)) {
-            case QUOTE:
+            case QUOTE: {
                 db.beginTransaction();
                 int returnCount = 0;
                 try {
@@ -171,6 +179,8 @@ public class StockProvider extends ContentProvider {
                                 null,
                                 value
                         );
+
+                        returnCount ++;
                     }
                     db.setTransactionSuccessful();
                 } finally {
@@ -181,12 +191,26 @@ public class StockProvider extends ContentProvider {
                 if (context != null) {
                     context.getContentResolver().notifyChange(uri, null);
                 }
-
+                if (returnCount > 0) updateWidget();
                 return returnCount;
-            default:
-                return super.bulkInsert(uri, values);
+            }
+            default: {
+                int returnCount = super.bulkInsert(uri, values);
+                if (returnCount > 0) updateWidget();
+                return returnCount;
+            }
+
         }
 
 
+    }
+
+    private void updateWidget() {
+        Context context = getContext();
+        // Setting the package ensures that only components in our app will receive the broadcast
+        String packageName = context.getPackageName();
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
+        Log.i(LOG_TAG, "Update Intent " + packageName + " " + ACTION_DATA_UPDATED);
+        context.sendBroadcast(dataUpdatedIntent);
     }
 }

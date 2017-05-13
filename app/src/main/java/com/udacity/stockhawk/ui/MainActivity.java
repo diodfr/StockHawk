@@ -37,6 +37,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String TAG = MainActivity.class.getName();
     private static final int STOCK_LOADER = 0;
     public static final String STOCK_SYMBOL = "STOCK_SYMBOL";
+    public static final String[] COLUMNS = {
+            Contract.Quote._ID,
+            Contract.Quote.COLUMN_SYMBOL,
+            Contract.Quote.COLUMN_PRICE,
+            Contract.Quote.COLUMN_ABSOLUTE_CHANGE,
+            Contract.Quote.COLUMN_PERCENTAGE_CHANGE
+    };
 
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.recycler_view)
@@ -143,14 +150,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this,
-                Contract.Quote.URI,
-                new String[]{
-                        Contract.Quote._ID,
-                        Contract.Quote.COLUMN_SYMBOL,
-                        Contract.Quote.COLUMN_PRICE,
-                        Contract.Quote.COLUMN_ABSOLUTE_CHANGE,
-                        Contract.Quote.COLUMN_PERCENTAGE_CHANGE
-                },
+                Contract.Quote.URI, COLUMNS,
                 null, null, Contract.Quote.COLUMN_SYMBOL);
     }
 

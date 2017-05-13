@@ -1,6 +1,5 @@
 package com.udacity.stockhawk.sync;
 
-import android.app.job.JobInfo;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +17,7 @@ import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -38,7 +38,6 @@ public final class QuoteSyncJob {
     private static final String ONE_OFF_ID = "ONE_OFF";
     private static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
     private static final int PERIOD = 300000;
-    private static final int INITIAL_BACKOFF = 10000;
     private static final String PERIODIC_ID = "PeriodicQuoteUpdate";
     private static final int YEARS_OF_HISTORY = 2;
 
@@ -109,11 +108,11 @@ public final class QuoteSyncJob {
 
                 quoteCV.put(Contract.Quote.COLUMN_STOCK_EXCHANGE, stock.getStockExchange());
                 quoteCV.put(Contract.Quote.COLUMN_CURRENCY, stock.getCurrency());
-                quoteCV.put(Contract.Quote.COLUMN_ASK, stock.getQuote().getAsk().doubleValue());
-                quoteCV.put(Contract.Quote.COLUMN_BID, stock.getQuote().getBid().doubleValue());
-                quoteCV.put(Contract.Quote.COLUMN_EPS, stock.getStats().getEps().doubleValue());
-                quoteCV.put(Contract.Quote.COLUMN_PE, stock.getStats().getPe().doubleValue());
-                quoteCV.put(Contract.Quote.COLUMN_PEG, stock.getStats().getPeg().doubleValue());
+                quoteCV.put(Contract.Quote.COLUMN_ASK, validate(stock.getQuote().getAsk()));
+                quoteCV.put(Contract.Quote.COLUMN_BID, validate(stock.getQuote().getBid()));
+                quoteCV.put(Contract.Quote.COLUMN_EPS, validate(stock.getStats().getEps()));
+                quoteCV.put(Contract.Quote.COLUMN_PE, validate(stock.getStats().getPe()));
+                quoteCV.put(Contract.Quote.COLUMN_PEG, validate(stock.getStats().getPeg()));
 
                 quoteCVs.add(quoteCV);
 
@@ -130,6 +129,11 @@ public final class QuoteSyncJob {
         } catch (IOException exception) {
             Timber.e(exception, "Error fetching stock quotes");
         }
+    }
+
+    private static Double validate(BigDecimal data) {
+        if (data == null) return Double.MIN_VALUE;
+        return data.doubleValue();
     }
 
     private static void schedulePeriodic(Context context) {

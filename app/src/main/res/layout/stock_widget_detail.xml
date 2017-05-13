@@ -1,41 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/StockSymbol"
-        tools:text="GOOGL"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:background="@color/colorPrimaryLight"
+    android:id="@+id/widgetItem">
 
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/StockQuotation"
-        android:layout_marginRight="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp" />
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/StockSymbol"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="4dp"
+        android:textAppearance="@style/WidgetStockSymbolTextStyle"
+        tools:text="GOOGL" />
+
+    <TextView
         android:id="@+id/StockQuotation"
-        tools:text="$120"
-        app:layout_constraintRight_toLeftOf="@+id/StockVariation"
-        android:layout_marginRight="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/StockVariation"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/StockSymbol" />
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:textSize="12sp"
+        tools:text="$120"
+        android:textColor="#FFF"
+        />
+
+    <TextView
         android:id="@+id/StockVariation"
-        tools:text="+10%"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@+id/StockSymbol" />
-</android.support.constraint.ConstraintLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:textSize="10sp"
+        android:textColor="#FFF"
+        tools:text="+100%" />
+</LinearLayout>

@@ -42,6 +42,11 @@
             </intent-filter>
         </service>
 
+        <service android:name=".widget.StockAppWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            />
+
         <activity
             android:name=".ui.StockDetail"
             android:label="@string/title_activity_stock_detail"
@@ -50,6 +55,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.udacity.stockhawk.ui.MainActivity" />
         </activity>
+
+        <receiver android:name=".widget.StockAppWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.udacity.stockhawk.data.StockProvider.ACTION_DATA_UPDATED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/stock_widget_provider_info" />
+        </receiver>
     </application>
 
 </manifest>
