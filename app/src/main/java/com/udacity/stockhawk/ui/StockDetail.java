@@ -1,6 +1,5 @@
 package com.udacity.stockhawk.ui;
 
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;

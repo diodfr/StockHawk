@@ -26,7 +26,6 @@ public class StockAppWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         Log.d(LOG_TAG, "onReceive " + action);
-        //FIXME CATCHER L'EVENT
         if (AppWidgetManager.ACTION_APPWIDGET_UPDATE.equals(action)) {
             Bundle extras = intent.getExtras();
             if (extras != null) {
@@ -40,16 +39,16 @@ public class StockAppWidgetProvider extends AppWidgetProvider {
         } else if (StockProvider.ACTION_DATA_UPDATED.equals(action)) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
-                    new ComponentName(context, getClass()));
+                    new ComponentName(context, StockAppWidgetProvider.class));
             Log.d(LOG_TAG, "onReceive DATA_UPDATED " + Arrays.toString(appWidgetIds));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widgetStockList);
-            Log.d(LOG_TAG, "notifyAppWidgetViewDataChanged DONE" + appWidgetManager.getInstalledProviders().size());
+            Log.d(LOG_TAG, "notifyAppWidgetViewDataChanged DONE" + appWidgetManager.getInstalledProviders());
         } else super.onReceive(context, intent);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.i(LOG_TAG, "onUpdate " + appWidgetIds.length);
+        Log.i(LOG_TAG, "onUpdate " + Arrays.toString(appWidgetIds));
         // update each of the app widgets with the remote adapter
         for (int i = 0; i < appWidgetIds.length; ++i) {
 
