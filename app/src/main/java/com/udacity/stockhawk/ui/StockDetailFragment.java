@@ -3,7 +3,6 @@ package com.udacity.stockhawk.ui;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -97,19 +96,22 @@ public class StockDetailFragment extends Fragment
         Bundle arguments = getArguments();
         if (arguments != null) {
             stockSymbol = arguments.getString(MainActivity.STOCK_SYMBOL);
+
+            if (stockSymbol != null) {
+                View view = inflater.inflate(R.layout.fragment_stock_detail, container, false);
+                ButterKnife.bind(this, view);
+
+                historyLC.setVisibility(View.INVISIBLE);
+                loadingPB.setVisibility(View.VISIBLE);
+                Log.d(TAG, "Loading detail : VISIBLE");
+
+
+                getActivity().getSupportLoaderManager().restartLoader(STOCK_LOADER_DETAIL, null, this);
+
+                return view;
+            }
         }
-
-        View view = inflater.inflate(R.layout.fragment_stock_detail, container, false);
-        ButterKnife.bind(this, view);
-
-        historyLC.setVisibility(View.INVISIBLE);
-        loadingPB.setVisibility(View.VISIBLE);
-        Log.d(TAG, "Loading detail : VISIBLE");
-
-        if(stockSymbol != null)
-            getActivity().getSupportLoaderManager().restartLoader(STOCK_LOADER_DETAIL, null, this);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_stock_detail_empty, container, false);
     }
 
 
@@ -231,5 +233,19 @@ public class StockDetailFragment extends Fragment
 
         historyLC.getLegend().setEnabled(false);
         historyLC.invalidate();
+    }
+
+    public static StockDetailFragment newInstance(String stockSymbol) {
+        Bundle arguments = new Bundle();
+        arguments.putString(MainActivity.STOCK_SYMBOL, stockSymbol);
+
+        StockDetailFragment fragment = new StockDetailFragment();
+        fragment.setArguments(arguments);
+
+        return fragment;
+    }
+
+    public String getStockSymbol() {
+        return stockSymbol;
     }
 }

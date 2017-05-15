@@ -6,10 +6,6 @@
     android:initialLayout="@layout/stock_widget"
     android:resizeMode="vertical"
     android:widgetCategory="home_screen">
-    <!--
-    FIXME UDAPTE ALARM
-      To do so, set an alarm with an Intent that your AppWidgetProvider receives, using the	AlarmManager. Set the alarm type to either ELAPSED_REALTIME or RTC, which will only deliver the alarm when the device is awake
-    -->
 <!--
 FIXME CONFIGURE PREVIEW
     android:previewImage="@drawable/preview"
