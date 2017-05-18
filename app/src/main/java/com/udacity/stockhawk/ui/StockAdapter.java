@@ -4,6 +4,7 @@ package com.udacity.stockhawk.ui;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,11 @@ import butterknife.ButterKnife;
 
 class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
+    private static final String LOG_TAG = StockAdapter.class.getName();
     private final Context context;
     private Cursor cursor;
     private final StockAdapterOnClickHandler clickHandler;
+    private String selectedSymbol;
 
     StockAdapter(Context context, StockAdapterOnClickHandler clickHandler) {
         this.context = context;
@@ -59,7 +62,8 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         int position_absolute_change = cursor.getColumnIndex(Contract.Quote.COLUMN_ABSOLUTE_CHANGE);
         int position_percentage_change = cursor.getColumnIndex(Contract.Quote.COLUMN_PERCENTAGE_CHANGE);
 
-        holder.symbol.setText(cursor.getString(position_symbol));
+        String stockSymbol = cursor.getString(position_symbol);
+        holder.symbol.setText(stockSymbol);
         holder.price.setText(FormatterUtils.DOLLAR_FORMAT.format(cursor.getFloat(position_price)));
 
         float rawAbsoluteChange = cursor.getFloat(position_absolute_change);
@@ -81,7 +85,11 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             holder.change.setText(percentage);
         }
 
+        boolean selected = selectedSymbol != null && selectedSymbol.equals(stockSymbol);
 
+        Log.d(LOG_TAG, stockSymbol + " selected = " + selected);
+        
+        holder.itemView.setSelected(selected);
     }
 
     @Override
@@ -93,9 +101,27 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         return count;
     }
 
-
     interface StockAdapterOnClickHandler {
         void onClick(String symbol);
+    }
+
+    void setSelectedSymbol(String selectedSymbol) {
+        String oldSymbol = this.selectedSymbol;
+        this.selectedSymbol = selectedSymbol;
+
+        if (oldSymbol != null && !oldSymbol.equals(selectedSymbol)) {
+            int itemPosition = getItemPosition(oldSymbol);
+            if (itemPosition >= 0) {
+                notifyItemChanged(itemPosition);
+            }
+        }
+    }
+
+    private int getItemPosition(String selectedSymbol) {
+        for (int i = 0; i < cursor.getCount(); i++) {
+            if (selectedSymbol.equals(getSymbolAtPosition(i))) return i;
+        }
+        return -1;
     }
 
     class StockViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -120,10 +146,10 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             int adapterPosition = getAdapterPosition();
             cursor.moveToPosition(adapterPosition);
             int symbolColumn = cursor.getColumnIndex(Contract.Quote.COLUMN_SYMBOL);
-            clickHandler.onClick(cursor.getString(symbolColumn));
-
+            String stockSymbol = cursor.getString(symbolColumn);
+            clickHandler.onClick(stockSymbol);
+            setSelectedSymbol(stockSymbol);
+            notifyItemChanged(adapterPosition);
         }
-
-
     }
 }

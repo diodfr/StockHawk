@@ -41,7 +41,7 @@ public class StockAppWidgetService extends RemoteViewsService {
         private int indexStockPrice;
         private int indexStockPercentageChange;
 
-        public StockAppRemoteViewFactory(Context context, Intent intent) {
+        StockAppRemoteViewFactory(Context context, Intent intent) {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);

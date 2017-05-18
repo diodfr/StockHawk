@@ -5,10 +5,6 @@
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/stock_widget"
     android:resizeMode="vertical"
-    android:widgetCategory="home_screen">
-<!--
-FIXME CONFIGURE PREVIEW
-    android:previewImage="@drawable/preview"
-
--->
+    android:widgetCategory="home_screen"
+    android:previewImage="@drawable/stock_hawk_ori_portrait">
 </appwidget-provider>

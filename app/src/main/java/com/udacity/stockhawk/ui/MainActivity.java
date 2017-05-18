@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
@@ -12,11 +13,11 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity  implements StockListFragment.StockSelectionListener{
 
-    private static final String TAG = MainActivity.class.getName();
-
     public static final String STOCK_SYMBOL = "STOCK_SYMBOL";
+    private static final String LOG_TAG = MainActivity.class.getName();
 
     private boolean mTwoSides;
+    private String stockSymbol;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,37 +26,41 @@ public class MainActivity extends AppCompatActivity  implements StockListFragmen
         setContentView(R.layout.activity_main);
         QuoteSyncJob.initialize(this);
 
-        //FIXME Manage detail fragment
-        // FIXME Manage details fragment from widget
-
         mTwoSides = findViewById(R.id.stockDetail) != null;
-        if(mTwoSides) {
-            if (savedInstanceState == null) {
+        Log.d(LOG_TAG, "Two side layout ? " + mTwoSides);
+        if (savedInstanceState == null) {
+            stockSymbol = getIntent().getStringExtra(MainActivity.STOCK_SYMBOL);
+        } else {
+            stockSymbol = savedInstanceState.getString(STOCK_SYMBOL);
+        }
+
+        if (stockSymbol != null) {
+            if (mTwoSides) {
                 // Create the detail fragment and add it to the activity
                 // using a fragment transaction.
-
-                String stockSymbol = getIntent().getStringExtra(MainActivity.STOCK_SYMBOL);
-                StockDetailFragment fragment = StockDetailFragment.newInstance(stockSymbol);
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.stockDetail, fragment)
-                        .commit();
-
-                // Being here means we are in animation mode
-                supportPostponeEnterTransition();
+                stockSelected(stockSymbol);
+            } else {
+                StockListFragment stockListFragment = (StockListFragment) getSupportFragmentManager().findFragmentById(R.id.stockList);
+                stockListFragment.setSelectedSymbol(stockSymbol);
+                stockSelected(stockSymbol);
             }
         }
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(STOCK_SYMBOL, stockSymbol);
+    }
 
     @Override
     public void stockSelected(String stockSymbol) {
+        this.stockSymbol = stockSymbol;
         if (mTwoSides) {
             StockDetailFragment details = (StockDetailFragment) getSupportFragmentManager().findFragmentById(R.id.stockDetail);
             if (details == null || !stockSymbol.equals(details.getStockSymbol())) {
-                // FIXME HIGHLIGHT SELECTION
-                // FIXME KEEP SELECTION THROUGH ROTATION
                 // Make new fragment to show this selection.
                 details = StockDetailFragment.newInstance(stockSymbol);
 
@@ -68,7 +73,7 @@ public class MainActivity extends AppCompatActivity  implements StockListFragmen
             }
 
         } else {
-            Timber.d("Symbol clicked: %s", stockSymbol);
+            Log.d(LOG_TAG,"Symbol clicked: "  + stockSymbol);
             Intent detail = new Intent(this, StockDetail.class);
             detail.putExtra(STOCK_SYMBOL, stockSymbol);
 

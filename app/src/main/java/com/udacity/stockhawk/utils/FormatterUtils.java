@@ -26,20 +26,18 @@ public class FormatterUtils {
     }
 
 
-    private static final DecimalFormat createDollarFormatter() {
-        DecimalFormat dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
-
-        return dollarFormat;
+    private static DecimalFormat createDollarFormatter() {
+        return (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
     }
 
-    private static final DecimalFormat createDollarWithPlusFormatter() {
+    private static DecimalFormat createDollarWithPlusFormatter() {
         DecimalFormat dollarFormatWithPlus = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
         dollarFormatWithPlus.setPositivePrefix("+$");
 
         return dollarFormatWithPlus;
     }
 
-    private static final DecimalFormat createPercentFormatter() {
+    private static DecimalFormat createPercentFormatter() {
         DecimalFormat percentageFormat = (DecimalFormat) NumberFormat.getPercentInstance(Locale.getDefault());
         percentageFormat.setMaximumFractionDigits(2);
         percentageFormat.setMinimumFractionDigits(2);

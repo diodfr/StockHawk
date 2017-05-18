@@ -45,6 +45,7 @@ public class StockDetailFragment extends Fragment
     private static final String TAG = StockDetailFragment.class.getName();
 
     private static final int STOCK_LOADER_DETAIL = 100;
+    private static final String STOCK_SYMBOL = "StockSymbol";
 
     @BindView(R.id.progressBarDetail)
     ProgressBar loadingPB;
@@ -96,24 +97,36 @@ public class StockDetailFragment extends Fragment
         Bundle arguments = getArguments();
         if (arguments != null) {
             stockSymbol = arguments.getString(MainActivity.STOCK_SYMBOL);
-
-            if (stockSymbol != null) {
-                View view = inflater.inflate(R.layout.fragment_stock_detail, container, false);
-                ButterKnife.bind(this, view);
-
-                historyLC.setVisibility(View.INVISIBLE);
-                loadingPB.setVisibility(View.VISIBLE);
-                Log.d(TAG, "Loading detail : VISIBLE");
-
-
-                getActivity().getSupportLoaderManager().restartLoader(STOCK_LOADER_DETAIL, null, this);
-
-                return view;
-            }
         }
+
+        if (stockSymbol == null && savedInstanceState != null) {
+            stockSymbol = savedInstanceState.getString(STOCK_SYMBOL);
+        }
+
+
+        if (stockSymbol != null) {
+            View view = inflater.inflate(R.layout.fragment_stock_detail, container, false);
+            ButterKnife.bind(this, view);
+
+            historyLC.setVisibility(View.INVISIBLE);
+            loadingPB.setVisibility(View.VISIBLE);
+            Log.d(TAG, "Loading detail : VISIBLE");
+
+
+            getActivity().getSupportLoaderManager().restartLoader(STOCK_LOADER_DETAIL, null, this);
+
+            return view;
+        }
+
         return inflater.inflate(R.layout.fragment_stock_detail_empty, container, false);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(STOCK_SYMBOL, stockSymbol);
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -131,7 +144,6 @@ public class StockDetailFragment extends Fragment
                 loadingPB.setVisibility(View.INVISIBLE);
                 Log.d(TAG, "Loading detail : INVISIBLE");
             }
-            //FIXME check if there is data
         } finally {
             data.close();
         }
@@ -146,8 +158,6 @@ public class StockDetailFragment extends Fragment
     }
 
     private void bindData(Cursor data) {
-        //FIXME la rotation ne fonctionne pas
-
         int nameColIdx = data.getColumnIndex(Contract.Quote.COLUMN_NAME);
         int stockExchangeColIdx = data.getColumnIndex(Contract.Quote.COLUMN_STOCK_EXCHANGE);
         int priceColIdx = data.getColumnIndex(Contract.Quote.COLUMN_PRICE);
@@ -212,6 +222,7 @@ public class StockDetailFragment extends Fragment
         LineData data = new LineData(dataSet);
         historyLC.setData(data);
         XAxis xAxis = historyLC.getXAxis();
+        //noinspection deprecation We need to be compatible with older API
         int axisColor = getResources().getColor(R.color.colorPrimary);
         xAxis.setTextColor(axisColor);
         xAxis.setAxisLineColor(axisColor);

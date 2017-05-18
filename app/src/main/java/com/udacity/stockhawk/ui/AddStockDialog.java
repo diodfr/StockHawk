@@ -1,7 +1,6 @@
 package com.udacity.stockhawk.ui;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -23,13 +22,19 @@ import butterknife.ButterKnife;
 
 public class AddStockDialog extends DialogFragment {
 
-    private final StockListFragment stockListFragment;
+    private StockListFragment stockListFragment;
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.dialog_stock)
     EditText stock;
 
-    public AddStockDialog(StockListFragment stockListFragment) {
-        this.stockListFragment = stockListFragment;
+    public static AddStockDialog newInstance(StockListFragment stockListFragment) {
+        AddStockDialog addStockDialog = new AddStockDialog();
+        addStockDialog.stockListFragment = stockListFragment;
+        return addStockDialog;
+    }
+
+    public AddStockDialog() {
+
     }
 
     @Override

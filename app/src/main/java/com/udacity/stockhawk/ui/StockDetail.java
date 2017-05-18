@@ -12,8 +12,9 @@ public class StockDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE) {
+        Configuration configuration = getResources().getConfiguration();
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE &&
+                configuration.screenWidthDp > 600) {
             // If the screen is now in landscape mode, we can show the
             // dialog in-line with the list so we don't need this activity.
             finish();

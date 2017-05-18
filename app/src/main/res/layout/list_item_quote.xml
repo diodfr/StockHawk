@@ -6,7 +6,8 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:paddingRight="16dp"
+    android:background="@drawable/stock_list_item_background">
 
     <TextView
         android:id="@+id/symbol"
@@ -28,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10sp"
+            android:layout_marginRight="10sp"
             tools:text="1000.00" />
 
         <TextView

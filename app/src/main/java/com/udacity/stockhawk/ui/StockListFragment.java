@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -16,6 +17,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +61,10 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.error)
     TextView error;
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.fab)
+    FloatingActionButton button;
+
     private StockAdapter adapter;
 
     private StockSelectionListener mListener;
@@ -67,19 +73,14 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment StockListFragment.
-     */
-    public static StockListFragment newInstance() {
-        return new StockListFragment();
+    public void setSelectedSymbol(String selectedSymbol) {
+        if (adapter!=null) adapter.setSelectedSymbol(selectedSymbol);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -108,6 +109,13 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
                 getActivity().getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
             }
         }).attachToRecyclerView(stockRecyclerView);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                button();
+            }
+        });
 
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setRefreshing(true);
@@ -146,8 +154,8 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-    public void button(@SuppressWarnings("UnusedParameters") View view) {
-        new AddStockDialog(this).show(getActivity().getFragmentManager(), "StockDialogFragment");
+    public void button() {
+        AddStockDialog.newInstance(this).show(getActivity().getFragmentManager(), "StockDialogFragment");
     }
 
     void addStock(String symbol) {
@@ -188,7 +196,6 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
         Log.d(TAG, "Loader was reset");
         swipeRefreshLayout.setRefreshing(false);
         adapter.setCursor(null);
-        //FIXME error message
     }
 
 
@@ -201,13 +208,11 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-    //FIXME @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //FIXME ADD TOOLBAR
-        /*getMenuInflater().inflate(R.menu.main_activity_settings, menu);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_activity_settings, menu);
         MenuItem item = menu.findItem(R.id.action_change_units);
-        setDisplayModeMenuItemIcon(item);*/
-        return true;
+        setDisplayModeMenuItemIcon(item);
     }
 
     @Override
@@ -248,7 +253,7 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
         mListener = null;
     }
 
-    public interface StockSelectionListener {
+    interface StockSelectionListener {
         void stockSelected(String stockName);
     }
 }
