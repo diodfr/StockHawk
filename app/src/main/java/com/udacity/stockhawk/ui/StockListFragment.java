@@ -202,8 +202,10 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
     private void setDisplayModeMenuItemIcon(MenuItem item) {
         if (PrefUtils.getDisplayMode(getActivity())
                 .equals(getString(R.string.pref_display_mode_absolute_key))) {
+            item.setTitle(R.string.switch_mode_percentage);
             item.setIcon(R.drawable.ic_percentage);
         } else {
+            item.setTitle(R.string.switch_mode_absolute);
             item.setIcon(R.drawable.ic_dollar);
         }
     }

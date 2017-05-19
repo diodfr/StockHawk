@@ -78,7 +78,7 @@ public final class QuoteSyncJob {
 
                 Stock stock = quotes.get(symbol);
 
-                if (!stock.isValid()) continue;
+                if (stock!=null && !stock.isValid()) continue;
                 StockQuote quote = stock.getQuote();
 
                 float price = quote.getPrice().floatValue();
